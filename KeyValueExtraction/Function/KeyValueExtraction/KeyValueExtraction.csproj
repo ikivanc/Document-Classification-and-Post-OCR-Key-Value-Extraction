@@ -18,6 +18,9 @@
     <None Update="Resources\ClassifiedMessages.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\GeneralTemplate.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\JFKIdentificationForm.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -59,16 +59,12 @@ namespace CognitiveFunction
 
             string requestBody = new StreamReader(req.Body).ReadToEnd();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-
             string imageUrl = data?.url;
 
-            log.LogInformation($"1 imageUrl value: {data?.url}");
-            log.LogInformation($"2 imageUrl value: {imageUrl}");
-
-
+            // Check if imageUrl is not empty
             if (string.IsNullOrWhiteSpace(imageUrl))
             {
-                return new BadRequestObjectResult("Please pass an image URL and Template on the query string or in the request body");
+                return new BadRequestObjectResult("Please pass an image URL in the request body");
             }
             else
             {
@@ -83,18 +79,13 @@ namespace CognitiveFunction
                 // This code part is part is adjust for forms, find file path & name after container name
                 string[] parts = uri.LocalPath.Split(Environment.GetEnvironmentVariable("ContainerName") + "/");
                 string filename = parts[parts.Length-1];
-
                 imageUrl = GetBlobSasUri(container, filename, null);
 
-
+                // Retrieve Classification of the images
                 string formTemplate = await MakeCustomVisionRequestByUrl(imageUrl);
-                log.LogInformation($"3 MakeCustomVisionRequestByUrl is done");
-                // OCR Output
+
+                // Key-Value Extraction via OCR Output
                 var outputResult = await MakeOCRRequestByUrl(imageUrl, formTemplate, executionContext);
-
-                log.LogInformation($"4 MakeOCRRequestByUrl is done");
-
-
 
                 // Put together response as JSON output
                 WebApiResponseRecord responseRecord = new WebApiResponseRecord();
@@ -152,13 +143,13 @@ namespace CognitiveFunction
             return blob.Uri + sasBlobToken;
         }
 
-        // OCR Request by URL
+        // OCR Request by URL & Extract Key-Value Pairs
         public static async Task<List<string>> MakeOCRRequestByUrl(string imageUrl, string formType, ExecutionContext executionContext)
         {
             Console.Write("C# HTTP trigger function processed: MakeOCRRequestByUrl");
 
-            string urlBase = "https://westeurope.api.cognitive.microsoft.com/vision/v2.0/"; //Environment.GetEnvironmentVariable("CognitiveServicesUrlBase");
-            string key = "ab5a84a2db0146ca820a8f0bce75c9eb"; //Environment.GetEnvironmentVariable("CognitiveServicesKey");
+            string urlBase = Environment.GetEnvironmentVariable("CognitiveServicesUrlBase");
+            string key = Environment.GetEnvironmentVariable("CognitiveServicesKey");
 
             var client = new HttpClient();
             var queryString = HttpUtility.ParseQueryString(string.Empty);
@@ -215,9 +206,8 @@ namespace CognitiveFunction
                 resultText = (from Line sline in ocrOutput.RecognitionResult.Lines
                               select (string)sline.Text).ToList<string>();
 
+                // Extract Key-Value Pairs
                 resultText = OCRHelper.ExtractKeyValuePairs(ocrOutput.RecognitionResult.Lines, formType, executionContext);
-
-                Console.Write($"C# HTTP trigger function processed: MakeOCRRequestByUrl done: {resultText}");
 
                 return resultText;
             }
@@ -225,16 +215,11 @@ namespace CognitiveFunction
             {
                 return null;
             }
-
-
-
         }
 
         // Form Classification using Custom Vision AI
         public static async Task<string> MakeCustomVisionRequestByUrl(string imageUrl)
         {
-            Console.Write("C# HTTP trigger function processed: MakeCustomVisionRequestByUrl");
-
             var client = new HttpClient();
 
             // Request headers
@@ -262,8 +247,6 @@ namespace CognitiveFunction
                 var result = (from p in custobjectVision.Predictions
                               orderby p.Probability descending
                               select p.TagName).FirstOrDefault<string>();
-
-                Console.Write($"C# HTTP trigger function processed: Custom Vision result: {result}");
 
                 return result;
             }

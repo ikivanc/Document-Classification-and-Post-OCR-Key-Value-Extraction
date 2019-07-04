@@ -15,7 +15,7 @@ namespace CognitiveFunction.Services
     {
         public static List<TextExtract> RetrieveAllSearchTextKeyFields(string formType, ExecutionContext executionContext)
         {
-            //json template path
+            //json templates per class items
             string file = string.Empty;
 
             switch (formType)
