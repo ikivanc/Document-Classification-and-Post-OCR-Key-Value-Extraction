@@ -30,7 +30,7 @@ A shared access signature (SAS) provides you with a way to grant limited access 
 
 This technique uses location of bounding boxes returned by Microsoft Cognitive Services OCR API. Region of the key reference texts are defined in a JSON file. Search data notation is like below format:
 
-```json
+```
 {
   "id": 2,
   "text": "PRIORITY",   // Your Reference Text Value
@@ -114,7 +114,7 @@ After above definitions search regions will be set like below
 
 And after that, we'll be succesfully extract like below. 
 
-![](Images/JFK2Extract.png)
+![](Images/JFK2output.png) 
 
 
 ## Extract Key-Values from Semi-Structured Content
@@ -187,4 +187,4 @@ After above definitions search regions will be set like below
 
 And after that, we'll be succesfully extract like below.
 
-![](Images/JFK1Extract.png)
+![](Images/JFK1output.png)
