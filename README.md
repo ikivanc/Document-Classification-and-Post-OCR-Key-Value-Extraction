@@ -1,10 +1,12 @@
 # Document Classification and Post-OCR Key-Value Extraction
 
+This sample shows how to extract key-value pairs from multiple templates using `Document Classification` and `Key-Value Extraction`.
+
 This an Azure Function sample that accepts Form Image url inputs from the user and extract needed information into a json output. You can use structured and semi-structured Forms to Extract details.
 
-As a test dataset I used JFK Files documents to classify and extract key-value pairs.
+As a test dataset, JFK Files documents are used to classify and extract key-value pairs.
 
-This application has been created using Microsoft Azure Functions.
+This application has been created using Microsoft Azure Functions, Micosoft Custom Vision AI and Cognitive Services Computer Vision OCR API.
 
 ![](Images/Architecture.png)
 
@@ -13,7 +15,7 @@ Document classification for JFK files and Post-OCR key-value extraction from fro
 
 ## Custom Vision for Document Classification
 
-For document classification, Custom Vision Services is used to classify document types. In this sample we have 2 sample documents and these using partly different templates. Custom Vision AI is very good at classifing these kind of documents.
+For document classification, [Custom Vision Services](https://www.customvision.ai) is used to classify document types. In this sample we have 2 sample documents and these using partly different templates. [Custom Vision AI](https://www.customvision.ai) is very good at classifing these kind of documents.
 
 Here's a screenshot from the portal below.
 
@@ -24,6 +26,27 @@ Here's a screenshot from the portal below.
 A shared access signature (SAS) provides you with a way to grant limited access to objects in your storage account to other clients, without exposing your account key. For more details about
 [Using shared access signatures (SAS)](https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1)
 
+
+## Run Project with Local Settings
+
+To run this sample succesfully in your local, First you need to create a file in root called `local.settings.json` and values should be like below.
+
+```
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
+    "CognitiveServicesUrlBase": "https://westeurope.api.cognitive.microsoft.com/vision/v2.0/",
+    "CognitiveServicesKey": "YOUR_COGNITIVE_SERVICES_KEY",
+    "ConnectionString": "YOUR_CONNECTION_STRING",
+    "ContainerName": "jfkfiles",
+    "CustomVisionUrlBase": "https://westeurope.api.cognitive.microsoft.com/customvision/v3.0/Prediction/YOUR_APP_ID/classify/iterations/YOUR_ITERATION_NAME/url",
+    "CustomVisionPredictionKey": "YOUR_CUSTOM_VISION_PREDICTION_KEY"
+  }
+}
+```
 
 
 ## Post-OCR Processing: Defining Reference Text (Key) and Desired Value Margins
