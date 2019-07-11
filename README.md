@@ -8,9 +8,13 @@ As a test dataset, JFK Files documents are used to classify and extract key-valu
 
 This application has been created using Microsoft Azure Functions, Micosoft Custom Vision AI and Cognitive Services Computer Vision OCR API.
 
+Document classification for JFK files and Post-OCR key-value extraction from froms.
+
 ![](Images/Architecture.png)
 
-Document classification for JFK files and Post-OCR key-value extraction from froms.
+This sample shows how to extract values from multiple form templates. You can find below flow for multiple documents.
+
+![](Images/Flow.png)
 
 
 ## Custom Vision for Document Classification
