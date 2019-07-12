@@ -1,6 +1,6 @@
 # Document Classification and Post-OCR Key-Value Extraction
 
-This sample shows how to extract key-value pairs from multiple templates using `Document Classification` and `Key-Value Extraction`.
+This sample shows how to extract key-value pairs from multiple templates using `Document Classification` and `Key-Value Extraction`. This method is working as a custom pre-trained model, you have to define your template to extract information needed. 
 
 This an Azure Function sample that accepts Form Image url inputs from the user and extract needed information into a json output. You can use structured and semi-structured Forms to Extract details.
 
