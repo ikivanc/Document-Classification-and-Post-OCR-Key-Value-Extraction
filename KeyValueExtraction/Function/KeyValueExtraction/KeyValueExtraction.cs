@@ -28,25 +28,25 @@ namespace CognitiveFunction
         #region classes used to serialize the response
         private class WebApiResponseError
         {
-            public string message { get; set; }
+            public string Message { get; set; }
         }
 
         private class WebApiResponseWarning
         {
-            public string message { get; set; }
+            public string Message { get; set; }
         }
 
         private class WebApiResponseRecord
         {
-            public string dataSource { get; set; }
-            public Dictionary<string, object> data { get; set; }
-            public List<WebApiResponseError> errors { get; set; }
-            public List<WebApiResponseWarning> warnings { get; set; }
+            public string DataSource { get; set; }
+            public Dictionary<string, object> Data { get; set; }
+            public List<WebApiResponseError> Errors { get; set; }
+            public List<WebApiResponseWarning> Warnings { get; set; }
         }
 
         private class WebApiEnricherResponse
         {
-            public List<WebApiResponseRecord> values { get; set; }
+            public List<WebApiResponseRecord> Values { get; set; }
         }
         #endregion
 
@@ -62,11 +62,7 @@ namespace CognitiveFunction
             string imageUrl = data?.url;
 
             // Check if imageUrl is not empty
-            if (string.IsNullOrWhiteSpace(imageUrl))
-            {
-                return new BadRequestObjectResult("Please pass an image URL in the request body");
-            }
-            else
+            if (!string.IsNullOrWhiteSpace(imageUrl))
             {
                 // Get SAS Access to private containers
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("ConnectionString"));
@@ -78,7 +74,7 @@ namespace CognitiveFunction
 
                 // This code part is part is adjust for forms, find file path & name after container name
                 string[] parts = uri.LocalPath.Split(Environment.GetEnvironmentVariable("ContainerName") + "/");
-                string filename = parts[parts.Length-1];
+                string filename = parts.Last();
                 imageUrl = GetBlobSasUri(container, filename, null);
 
                 // Retrieve Classification of the images
@@ -89,14 +85,18 @@ namespace CognitiveFunction
 
                 // Put together response as JSON output
                 WebApiResponseRecord responseRecord = new WebApiResponseRecord();
-                responseRecord.data = new Dictionary<string, object>();
-                responseRecord.dataSource = imageUrl;
-                responseRecord.data.Add("KeyValues", outputResult);
+                responseRecord.Data = new Dictionary<string, object>();
+                responseRecord.DataSource = imageUrl;
+                responseRecord.Data.Add("KeyValues", outputResult);
                 WebApiEnricherResponse response = new WebApiEnricherResponse();
-                response.values = new List<WebApiResponseRecord>();
-                response.values.Add(responseRecord);
+                response.Values = new List<WebApiResponseRecord>();
+                response.Values.Add(responseRecord);
 
                 return (ActionResult)new OkObjectResult(response);
+            }
+            else
+            {
+                return new BadRequestObjectResult("Please pass an image URL in the request body");
             }
         }
 
@@ -163,10 +163,10 @@ namespace CognitiveFunction
 
             HttpResponseMessage response;
 
-            var requstbody = "{\"url\":\"" + $"{imageUrl}" + "\"}";
+            var requestBody = "{\"url\":\"" + $"{imageUrl}" + "\"}";
 
             // Request body
-            byte[] byteData = Encoding.UTF8.GetBytes(requstbody);
+            byte[] byteData = Encoding.UTF8.GetBytes(requestBody);
 
             using (var content = new ByteArrayContent(byteData))
             {
@@ -232,7 +232,7 @@ namespace CognitiveFunction
             HttpResponseMessage response;
 
             // Request body
-            byte[] byteData = Encoding.UTF8.GetBytes("{\"Url\": \"" + imageUrl + "\"}");
+            byte[] byteData = Encoding.UTF8.GetBytes("{\"url\": \"" + imageUrl + "\"}");
 
             using (var content = new ByteArrayContent(byteData))
             {

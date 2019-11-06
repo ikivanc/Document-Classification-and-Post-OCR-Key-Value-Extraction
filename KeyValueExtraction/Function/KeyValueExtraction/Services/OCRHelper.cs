@@ -13,7 +13,7 @@ namespace CognitiveFunction.Services
 {
     public class OCRHelper
     {
-        public static List<TextExtract> RetrieveAllSearchTextKeyFields(string formType, ExecutionContext executionContext)
+        public static IEnumerable<TextExtract> RetrieveAllSearchTextKeyFields(string formType, ExecutionContext executionContext)
         {
             //json templates per class items
             string file = string.Empty;
@@ -34,7 +34,7 @@ namespace CognitiveFunction.Services
 
             //deserialize JSON from file  
             string Json = file;
-            var searchtextlist = JsonConvert.DeserializeObject<List<TextExtract>>(Json);
+            var searchtextlist = JsonConvert.DeserializeObject<IEnumerable<TextExtract>>(Json);
 
             return searchtextlist;
         }
@@ -42,7 +42,7 @@ namespace CognitiveFunction.Services
         public static List<string> ExtractKeyValuePairs(Line[] lines, string formType, ExecutionContext executionContext)
         {
             //Initialize settings
-            List<TextExtract> searchKeyList = OCRHelper.RetrieveAllSearchTextKeyFields(formType, executionContext); // Retrieve all key-fields as reference
+            IEnumerable<TextExtract> searchKeyList = OCRHelper.RetrieveAllSearchTextKeyFields(formType, executionContext); // Retrieve all key-fields as reference
             List<Word> textvalues = new List<Word>();
             List<Line> linevalues = new List<Line>();
             List<string> result = new List<string>();
@@ -62,7 +62,7 @@ namespace CognitiveFunction.Services
             }
 
             // Search Key-Value Pairs inside the documents
-            if (searchKeyList.Count > 0)
+            if (searchKeyList.Any())
             {
                 foreach (TextExtract key in searchKeyList)
                 {
